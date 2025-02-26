@@ -166,3 +166,15 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchUpcomingMatches();
     fetchNews();
 });
+async function fetchWithRetry(url, headers, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+        const response = await fetch(url, { method: "GET", headers });
+        if (response.ok) return response.json();
+        if (response.status === 429) {
+            console.warn(`Rate limit reached. Retrying in ${2 ** i} seconds...`);
+            await new Promise(res => setTimeout(res, 2 ** i * 1000)); // Exponential backoff
+        } else {
+            throw new Error(`Failed to fetch: ${response.status}`);
+        }
+    }
+}

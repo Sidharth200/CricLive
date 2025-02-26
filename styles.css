@@ -3,24 +3,32 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+    background-color: #f0f4f8;
     color: #333;
 }
 
 /* Navigation Bar */
 nav {
-    background-color: #026937;
+    background-color: #0057b7; /* Changed to Blue */
     padding: 10px 0;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
 }
 
+/* Logo */
+.logo {
+    height: 100px; /* Adjust size as needed */
+}
+
+/* Navigation Links */
 nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center;
     gap: 20px;
 }
 
@@ -62,8 +70,8 @@ section {
 }
 
 h2 {
-    color: #026937;
-    border-bottom: 2px solid #026937;
+    color: #0057b7; /* Changed to Blue */
+    border-bottom: 2px solid #0057b7;
     padding-bottom: 5px;
 }
 
@@ -73,7 +81,7 @@ h2 {
     border: 1px solid #ddd;
     border-radius: 5px;
     margin-bottom: 10px;
-    background-color: #e9f7ef;
+    background-color: #e3f2fd; /* Light Blue */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -82,7 +90,7 @@ h2 {
 .match h3 {
     margin: 0;
     font-size: 22px;
-    color: #026937;
+    color: #0057b7;
 }
 
 .match p {
@@ -131,7 +139,7 @@ h2 {
 }
 
 .news-article a {
-    color: #007BFF;
+    color: #0057b7;
     font-weight: bold;
 }
 
@@ -139,7 +147,7 @@ h2 {
 button {
     padding: 10px 15px;
     border: none;
-    background-color: #026937;
+    background-color: #0057b7;
     color: white;
     font-size: 16px;
     border-radius: 5px;
@@ -148,31 +156,63 @@ button {
 }
 
 button:hover {
-    background-color: #024e27;
+    background-color: #003e99;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* 🔹📱 Mobile View (Screen Width: Less than 600px) */
+@media screen and (max-width: 600px) {
     .container {
         width: 100%;
         padding: 10px;
+    }
+
+    nav {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+        height: 50px;
     }
 
     nav ul {
         flex-direction: column;
         align-items: center;
     }
+
+    nav ul li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    section h2 {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+    }
 }
-.logo {
-    height: 100px;  /* Adjust size as needed */
-    margin-right: 10px;
-}
-nav {
-    display: flex;
-    align-items: center;
-}
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
+
+/* 🔹📊 Tablet View (Screen Width: 600px to 900px) */
+@media screen and (min-width: 600px) and (max-width: 900px) {
+    .container {
+        width: 90%;
+    }
+
+    nav ul {
+        justify-content: space-around;
+    }
+
+    section {
+        text-align: center;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 12px 20px;
+    }
 }
