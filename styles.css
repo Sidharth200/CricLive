@@ -163,3 +163,16 @@ button:hover {
         align-items: center;
     }
 }
+.logo {
+    height: 100px;  /* Adjust size as needed */
+    margin-right: 10px;
+}
+nav {
+    display: flex;
+    align-items: center;
+}
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
