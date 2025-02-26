@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CricLive - Match Schedule</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="scores.html">Live Scores</a></li>
+            <li><a href="schedule.html">Matches Schedule</a></li>
+            <li><a href="news.html">News</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section>
+            <h2>Upcoming Matches</h2>
+            <button onclick="fetchUpcomingMatches()">Load Upcoming Matches</button>
+            <div id="upcomingMatches"></div>
+        </section>
+
+        <section>
+            <h2>Past Matches</h2>
+            <button onclick="fetchPastMatches()">Load Past Matches</button>
+            <div id="pastMatches"></div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

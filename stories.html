@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Stories</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>User Stories</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="scores.html">Live Scores</a></li>
+            <li><a href="stories.html">Stories</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2>Share Your Cricket Story</h2>
+        <form id="storyForm">
+            <input type="text" id="username" placeholder="Your Name" required>
+            <textarea id="storyText" placeholder="Write your story here..." required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+
+        <h2>Community Stories</h2>
+        <div id="storyList"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
