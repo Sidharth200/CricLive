@@ -8,7 +8,7 @@ const readMoreButton = document.createElement("button");
 readMoreButton.textContent = "Read More News";
 readMoreButton.style = "display: block; margin-top: 10px; background-color: #007BFF; color: white; padding: 10px 15px; border-radius: 5px; text-align: center; text-decoration: none; width: fit-content; margin-left: auto; margin-right: auto; cursor: pointer;";
 
-const newsApiKey = "84766c429e2d4757b4aa1e0cee5e5b46";
+const newsApiKey = "69f3fb37-a083-480e-a7bc-6f4c709ef88b";
 const matchesApiKey = "1be34a8a-da3c-4626-8663-70c7c8f272e9";
 let currentNewsPage = 1;
 const newsPerPage = 8;
@@ -32,8 +32,14 @@ async function fetchMatchesList() {
 // Fetch cricket news
 async function fetchNews() {
     try {
-        const response = await fetch(`https://newsapi.org/v2/everything?q=cricket&pageSize=20&apiKey=${newsApiKey}`);
-        if (!response.ok) throw new Error("Failed to fetch news");
+        const response = await fetch(`https://newsapi.org/v2/everything?q=cricket&pageSize=20&apiKey=${newsApiKey}`, {
+            headers: {
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error(`Failed to fetch news, Status: ${response.status}`);
 
         const data = await response.json();
         allArticles = data.articles;
@@ -104,24 +110,3 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchMatchesList();
     fetchNews();
 });
-async function fetchNews() {
-    try {
-        const response = await fetch(`https://newsapi.org/v2/everything?q=cricket&pageSize=20&apiKey=${newsApiKey}`, {
-            headers: {
-                "User-Agent": "Mozilla/5.0",
-                "Accept": "application/json"
-            }
-        });
-
-        if (!response.ok) throw new Error(`Failed to fetch news, Status: ${response.status}`);
-
-        const data = await response.json();
-        allArticles = data.articles;
-        console.log("News Data:", allArticles);
-        displayNews();
-    } catch (error) {
-        console.error("Error fetching news:", error);
-        newsContainer.innerHTML = "<p>Failed to load news.</p>";
-    }
-}
-
