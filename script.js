@@ -2,179 +2,105 @@ const liveScoresContainer = document.getElementById("liveScores");
 const pastMatchesContainer = document.getElementById("pastMatches");
 const upcomingMatchesContainer = document.getElementById("upcomingMatches");
 const newsContainer = document.getElementById("news");
+const pastMatchesButton = document.getElementById("loadPastMatches");
+const upcomingMatchesButton = document.getElementById("loadUpcomingMatches");
+const readMoreButton = document.createElement("button");
+readMoreButton.textContent = "Read More News";
+readMoreButton.style = "display: block; margin-top: 10px; background-color: #007BFF; color: white; padding: 10px 15px; border-radius: 5px; text-align: center; text-decoration: none; width: fit-content; margin-left: auto; margin-right: auto; cursor: pointer;";
 
 const newsApiKey = "84766c429e2d4757b4aa1e0cee5e5b46";
 const matchesApiKey = "1be34a8a-da3c-4626-8663-70c7c8f272e9";
+let currentNewsPage = 1;
+const newsPerPage = 8;
+let allArticles = [];
 
-// Fetch live scores
-async function fetchLiveScores() {
+// Fetch matches list
+async function fetchMatchesList() {
     try {
-        const response = await fetch("https://cricbuzz-cricket.p.rapidapi.com/matches/v1/live", {
-            method: "GET",
-            headers: {
-                "x-rapidapi-host": "cricbuzz-cricket.p.rapidapi.com",
-                "x-rapidapi-key": matchesApiKey
-            }
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch live scores");
+        const response = await fetch(`https://api.sportradar.us/cricket-t2/en/schedule.json?api_key=${matchesApiKey}`);
+        if (!response.ok) throw new Error("Failed to fetch matches list");
 
         const data = await response.json();
-        displayLiveScores(data);
+        console.log("Matches List Data:", data);
+        displayMatches(data, liveScoresContainer, "No matches available.");
     } catch (error) {
-        console.error("Error fetching live scores:", error);
-        liveScoresContainer.innerHTML = "<p>Failed to load live scores.</p>";
+        console.error("Error fetching matches list:", error);
+        liveScoresContainer.innerHTML = "<p>Failed to load matches.</p>";
     }
-}
-
-// Function to display live scores
-function displayLiveScores(data) {
-    liveScoresContainer.innerHTML = "";
-
-    if (!data || !data.typeMatches) {
-        liveScoresContainer.innerHTML = "<p>No live matches available.</p>";
-        return;
-    }
-
-    data.typeMatches.forEach(matchType => {
-        matchType.seriesMatches.forEach(series => {
-            if (series.seriesAdWrapper) {
-                series.seriesAdWrapper.matches.forEach(match => {
-                    const matchElement = document.createElement("div");
-                    matchElement.classList.add("match");
-                    matchElement.innerHTML = `
-                        <h3>${match.matchInfo.team1.teamName} vs ${match.matchInfo.team2.teamName}</h3>
-                        <p><strong>Venue:</strong> ${match.matchInfo.venueInfo.ground}</p>
-                        <p><strong>Status:</strong> ${match.matchInfo.status}</p>
-                    `;
-                    liveScoresContainer.appendChild(matchElement);
-                });
-            }
-        });
-    });
-}
-
-// Fetch past matches
-async function fetchPastMatches() {
-    try {
-        const response = await fetch("https://cricbuzz-cricket.p.rapidapi.com/matches/v1/recent", {
-            method: "GET",
-            headers: {
-                "x-rapidapi-host": "cricbuzz-cricket.p.rapidapi.com",
-                "x-rapidapi-key": matchesApiKey
-            }
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch past matches");
-
-        const data = await response.json();
-        displayMatches(data, pastMatchesContainer, "No past matches available.");
-    } catch (error) {
-        console.error("Error fetching past matches:", error);
-        pastMatchesContainer.innerHTML = "<p>Failed to load past matches.</p>";
-    }
-}
-
-// Fetch upcoming matches
-async function fetchUpcomingMatches() {
-    try {
-        const response = await fetch("https://cricbuzz-cricket.p.rapidapi.com/matches/v1/upcoming", {
-            method: "GET",
-            headers: {
-                "x-rapidapi-host": "cricbuzz-cricket.p.rapidapi.com",
-                "x-rapidapi-key": matchesApiKey
-            }
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch upcoming matches");
-
-        const data = await response.json();
-        displayMatches(data, upcomingMatchesContainer, "No upcoming matches available.");
-    } catch (error) {
-        console.error("Error fetching upcoming matches:", error);
-        upcomingMatchesContainer.innerHTML = "<p>Failed to load upcoming matches.</p>";
-    }
-}
-
-// Function to display past/upcoming matches
-function displayMatches(data, container, emptyMessage) {
-    container.innerHTML = "";
-
-    if (!data || !data.typeMatches) {
-        container.innerHTML = `<p>${emptyMessage}</p>`;
-        return;
-    }
-
-    data.typeMatches.forEach(matchType => {
-        matchType.seriesMatches.forEach(series => {
-            if (series.seriesAdWrapper) {
-                series.seriesAdWrapper.matches.forEach(match => {
-                    const matchElement = document.createElement("div");
-                    matchElement.classList.add("match");
-                    matchElement.innerHTML = `
-                        <h3>${match.matchInfo.team1.teamName} vs ${match.matchInfo.team2.teamName}</h3>
-                        <p><strong>Date:</strong> ${new Date(match.matchInfo.startDate).toDateString()}</p>
-                        <p><strong>Venue:</strong> ${match.matchInfo.venueInfo.ground}</p>
-                    `;
-                    container.appendChild(matchElement);
-                });
-            }
-        });
-    });
 }
 
 // Fetch cricket news
 async function fetchNews() {
     try {
-        const response = await fetch(`https://newsapi.org/v2/everything?q=cricket&apiKey=${newsApiKey}`);
+        const response = await fetch(`https://newsapi.org/v2/everything?q=cricket&pageSize=20&apiKey=${newsApiKey}`);
         if (!response.ok) throw new Error("Failed to fetch news");
 
         const data = await response.json();
-        displayNews(data);
+        allArticles = data.articles;
+        console.log("News Data:", allArticles);
+        displayNews();
     } catch (error) {
         console.error("Error fetching news:", error);
         newsContainer.innerHTML = "<p>Failed to load news.</p>";
     }
 }
 
-// Function to display news articles
-function displayNews(data) {
+// Function to display news in a table format
+function displayNews() {
     newsContainer.innerHTML = "";
-
-    if (!data.articles || data.articles.length === 0) {
-        newsContainer.innerHTML = "<p>No news articles available.</p>";
+    if (!allArticles || allArticles.length === 0) {
+        newsContainer.innerHTML = "<p>No news available.</p>";
         return;
     }
 
-    newsContainer.innerHTML = data.articles.slice(0, 6).map(article => `
-        <div class="news-article">
-            <img src="${article.urlToImage || 'https://via.placeholder.com/150'}" alt="News Image">
-            <h3>${article.title}</h3>
-            <p>${article.description || "No description available."}</p>
-            <a href="${article.url}" target="_blank">Read More</a>
-        </div>
-    `).join("");
-}
+    const table = document.createElement("table");
+    table.classList.add("news-table");
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    `;
 
-// Refresh live scores every 30 seconds
-setInterval(fetchLiveScores, 30000);
+    const tbody = table.querySelector("tbody");
 
-// Load data on page load
-document.addEventListener("DOMContentLoaded", () => {
-    fetchLiveScores();
-    fetchPastMatches();
-    fetchUpcomingMatches();
-    fetchNews();
-});
-async function fetchWithRetry(url, headers, retries = 3) {
-    for (let i = 0; i < retries; i++) {
-        const response = await fetch(url, { method: "GET", headers });
-        if (response.ok) return response.json();
-        if (response.status === 429) {
-            console.warn(`Rate limit reached. Retrying in ${2 ** i} seconds...`);
-            await new Promise(res => setTimeout(res, 2 ** i * 1000)); // Exponential backoff
-        } else {
-            throw new Error(`Failed to fetch: ${response.status}`);
-        }
+    const startIndex = (currentNewsPage - 1) * newsPerPage;
+    const endIndex = startIndex + newsPerPage;
+    const articlesToShow = allArticles.slice(0, endIndex);
+
+    articlesToShow.forEach(article => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><a href="${article.url}" target="_blank"><img src="${article.urlToImage || "https://via.placeholder.com/100"}" alt="News Image" width="100" style="border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);"></a></td>
+            <td style="font-weight: bold; color: #333;">${article.title}</td>
+            <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${article.description || "No description available."}</td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    newsContainer.appendChild(table);
+
+    if (endIndex < allArticles.length) {
+        newsContainer.appendChild(readMoreButton);
     }
 }
+
+readMoreButton.addEventListener("click", () => {
+    currentNewsPage++;
+    displayNews();
+});
+
+pastMatchesButton.addEventListener("click", fetchPastMatches);
+upcomingMatchesButton.addEventListener("click", fetchUpcomingMatches);
+setInterval(fetchMatchesList, 30000);
+setInterval(fetchNews, 60000); // Refresh news every minute
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchMatchesList();
+    fetchNews();
+});
