@@ -104,3 +104,24 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchMatchesList();
     fetchNews();
 });
+async function fetchNews() {
+    try {
+        const response = await fetch(`https://newsapi.org/v2/everything?q=cricket&pageSize=20&apiKey=${newsApiKey}`, {
+            headers: {
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error(`Failed to fetch news, Status: ${response.status}`);
+
+        const data = await response.json();
+        allArticles = data.articles;
+        console.log("News Data:", allArticles);
+        displayNews();
+    } catch (error) {
+        console.error("Error fetching news:", error);
+        newsContainer.innerHTML = "<p>Failed to load news.</p>";
+    }
+}
+
