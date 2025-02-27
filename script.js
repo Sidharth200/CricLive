@@ -35,7 +35,9 @@ async function fetchNews() {
         const response = await fetch(`https://newsapi.org/v2/everything?q=cricket&pageSize=20&apiKey=${newsApiKey}`, {
             headers: {
                 "User-Agent": "Mozilla/5.0",
-                "Accept": "application/json"
+                "Accept": "application/json",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1"
             }
         });
 
@@ -47,9 +49,10 @@ async function fetchNews() {
         displayNews();
     } catch (error) {
         console.error("Error fetching news:", error);
-        newsContainer.innerHTML = "<p>Failed to load news.</p>";
+        newsContainer.innerHTML = `<p>Failed to load news. Status Code: ${error.message}</p>`;
     }
 }
+
 
 // Function to display news in a table format
 function displayNews() {
